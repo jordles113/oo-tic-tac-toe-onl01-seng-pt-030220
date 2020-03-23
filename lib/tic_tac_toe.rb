@@ -1,123 +1,116 @@
 class TicTacToe
-  
-   def initialize (board = nil)
-    @board = board || Array.new(9, " ")
+  attr_accessor :board
+
+  def initialize
+    @board = [" ", " ", " ", " ", " ", " ", " ", " ", " "]
   end
-  
-WIN_COMBINATIONS = [
-  [0,1,2],
-  [3,4,5],
-  [6,7,8],
-  [0,3,6],
-  [1,4,7],
-  [2,5,8],
-  [0,4,8],
-  [6,4,2]
+
+  WIN_COMBINATIONS = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [6, 4, 2],
+  [0, 4, 8]
 ]
 
-def display_board
+  def display_board
     puts " #{@board[0]} | #{@board[1]} | #{@board[2]} "
-    puts "-----------"
+    puts " ----------- "
     puts " #{@board[3]} | #{@board[4]} | #{@board[5]} "
-    puts "-----------"
+    puts " ----------- "
     puts " #{@board[6]} | #{@board[7]} | #{@board[8]} "
   end
 
-
- def input_to_index(player_input)
-  player_input = player_input.to_i
-  index = player_input-1
-  return index
-end
-
-def move(index, player = 'X')
-  @board[index] = player
-end
-
-def position_taken?(index)
-  @board[index]== "X" || @board[index] == "O"
-end
-
-
-def valid_move?(index)
-  index.between?(0,8) && !position_taken?(index)
-end
-
-
-def turn
-  puts "Please enter 1-9:"
-  user_input = gets.strip
-  index = input_to_index(user_input)
-  if valid_move?(index)
-    move(index, current_player)
-    display_board
-  else
-    turn
+  def input_to_index(input)
+    input.to_i - 1
   end
-end
 
-def turn_count
-  counter = 0
-  @board.each do |space|
-    if space == 'X' || space =='O'
-      counter += 1
+  def move(position, token='X')
+    @board[position] = token
+  end
+
+  def position_taken?(input)
+    @board[input] == "X" || @board[input] == "O"
+  end
+
+  def valid_move?(input)
+    input.between?(0, 8) && !position_taken?(input)
+  end
+
+
+  def turn
+    puts "Choose a spot between 1-9"
+    spot = gets.strip
+    spot = input_to_index(spot)
+    if valid_move?(spot)
+      move(spot, current_player)
+    else
+      turn
+    end
+    display_board
+  end
+
+  def turn_count
+    taken = 0
+    @board.each do |i|
+      if i == "X" || i == "O"
+        taken += 1
+      end
+    end
+    return taken
+  end
+
+  def current_player
+    player = nil
+    if turn_count() % 2 == 0
+      player = 'X'
+    else
+      player = 'O'
+    end
+    return player
+  end
+
+
+  def won?
+    WIN_COMBINATIONS.detect do |combo|
+      @board[combo[0]] == @board[combo[1]] &&
+      @board[combo[1]] == @board[combo[2]] &&
+      position_taken?(combo[0])
     end
   end
-  return counter
-end
 
-def current_player
-  turn_count% 2 == 0 ? "X" : "O"
-end
-
-
-def check_win_combo?(player, win_combo)
-  win_combo.all? do |position|
-    @board[position] == player
-  end
-end
-
-
-def won?
-  WIN_COMBINATIONS.each do |win_combo|
-    if check_win_combo?('X', win_combo)
-      return win_combo
-      elsif check_win_combo?('O', win_combo)
-      return win_combo
-  end
-end
-return false 
-end
-
-def full?
-  @board.all?{|token| token == "X" || token == "O"}
-end
-
-def draw?
-  !won? && full?
-end
-
-def over?
-  if won?|| draw?||full?
-  return true
-else
-  return false
-end
-end
-
-def winner
-  if win_combo = won?
-    return @board[win_combo.first]
-  end
-end
-
-def play
-    @board = Array.new(9, " ")
-    turn until over?
-    won? ? puts("Congratulations #{winner}!") : puts("Cat's Game!")
-    puts "Would you like to play again? (Y or N)"
-    gets.strip.downcase == "y" || gets.strip.downcase == "yes" ? play : puts("Goodbye!")
+  def full?
+    turn_count == 9
   end
 
-end
+  def draw?
+    !won? && full?
+  end
 
+  def over?
+    won? || full? || draw?
+  end
+
+  def winner
+    won = ""
+    if winner = won?
+      won = @board[winner.first]
+    end
+  end
+
+  def play
+    until over?
+      turn
+    end
+
+    if won?
+      winner = winner()
+      puts "Congratulations #{winner}!"
+    elsif draw?
+      puts "Cat's Game!"
+    end
+  end
+end
