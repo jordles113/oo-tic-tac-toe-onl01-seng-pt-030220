@@ -124,4 +124,5 @@ def play
 end
 end
 
-TicTacToe.new
+game = TicTacToe.new
+game.play 
