@@ -124,4 +124,3 @@ def play
 end
 end
 
-TicTacToe.play
