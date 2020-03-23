@@ -122,6 +122,8 @@ def play
     puts "Cat's Game!"
   end
 end
+game = TicTacToe.new
+game.play 
 end
 
 game = TicTacToe.new
