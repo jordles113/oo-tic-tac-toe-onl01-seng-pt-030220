@@ -11,11 +11,6 @@ WIN_COMBINATIONS = [
   [6,4,2]
 ]
 
-#Initialize method should set board 
-def initialize
-    @board = [" ", " ", " ", " ", " ", " ", " ", " ", " " ]
-end
-
 def display_board
     puts " #{@board[0]} | #{@board[1]} | #{@board[2]} "
     puts "-----------"
